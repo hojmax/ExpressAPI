@@ -2,12 +2,12 @@ const Connection = require('tedious').Connection
 const Request = require('tedious').Request
 const config = require('./config.json')
 
-const execute = (requestFunc) => new Promise((resolve, reject) => {
+const execute = (query, requestFunction) => new Promise((resolve, reject) => {
   const connection = new Connection(config)
 
   connection.on('connect', err => {
     if (err) return reject(err)
-    connection.execSql(requestFunc(resolve, reject))
+    connection.execSql(requestFunction(query, resolve, reject))
   })
 
   connection.connect()
@@ -39,24 +39,24 @@ const createVoidRequest = (query, resolve, reject) => {
 
 const getCustomer = (id) => {
   const query = `SELECT * FROM sales.customers WHERE customer_id = ${id}`
-  return execute((resolve, reject) => createGetRequest(query, resolve, reject))
+  return execute(query, createGetRequest)
 }
 
 const deleteCustomer = (id) => {
   const query = `DELETE FROM sales.customers WHERE customer_id = ${id}`
-  return execute((resolve, reject) => createVoidRequest(query, resolve, reject))
+  return execute(query, createVoidRequest)
 }
 
 const insertCustomer = (customer) => {
   const query = `INSERT INTO sales.customers (${Object.keys(customer)}) VALUES (${Object.values(customer).map(e => `'${e}'`)})`
   console.log(query)
-  return execute((resolve, reject) => createVoidRequest(query, resolve, reject))
+  return execute(query, createVoidRequest)
 }
 
 const updateCustomer = (id, customer) => {
   const query = `UPDATE sales.customers SET ${Object.keys(customer).map(key => `${key}='${customer[key]}'`)} WHERE customer_id = ${id}`
   console.log(query)
-  return execute((resolve, reject) => createVoidRequest(query, resolve, reject))
+  return execute(query, createVoidRequest)
 }
 
 module.exports = {
