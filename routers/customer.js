@@ -6,7 +6,8 @@ const {
 } = require('../db/db.js')
 const {
     validateId,
-    validateCustomer
+    validatePost,
+    validatePut
 } = require('../Joi.js')
 const express = require('express')
 const router = express.Router()
@@ -33,7 +34,7 @@ router.delete('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-    const { error } = validateCustomer(req.body)
+    const { error } = validatePost(req.body)
     if (error) return res.status(400).send(formatErr(error))
     insertCustomer(req.body)
         .then(() => res.send('Success'))
@@ -42,9 +43,9 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
     const idValidation = validateId(req.params)
-    const customerValidation = validateCustomer(req.body)
+    const putValidation = validatePut(req.body)
     if (idValidation.error) return res.status(400).send(formatErr(idValidation.error))
-    if (customerValidation.error) return res.status(400).send(formatErr(customerValidation.error))
+    if (putValidation.error) return res.status(400).send(formatErr(putValidation.error))
     updateCustomer(req.params.id, req.body)
         .then(() => res.send('Success'))
         .catch(err => res.status(400).send(err.toString()))

@@ -5,7 +5,7 @@ const idSchema = Joi.object({
         .required(),
 })
 
-const customerSchema = Joi.object({
+const postSchema = Joi.object({
     first_name: Joi.string()
         .max(255)
         .required(),
@@ -27,7 +27,28 @@ const customerSchema = Joi.object({
         .max(5),
 })
 
+
+const putSchema = Joi.object({
+    first_name: Joi.string()
+        .max(255),
+    last_name: Joi.string()
+        .max(255),
+    email: Joi.string()
+        .max(255),
+    phone: Joi.string()
+        .max(25),
+    city: Joi.string()
+        .max(50),
+    street: Joi.string()
+        .max(255),
+    state: Joi.string()
+        .max(25),
+    zip_code: Joi.string()
+        .max(5),
+})
+
 module.exports = {
     validateId: data => idSchema.validate(data),
-    validateCustomer: data => customerSchema.validate(data)
+    validatePost: data => postSchema.validate(data),
+    validatePut: data => putSchema.validate(data)
 }

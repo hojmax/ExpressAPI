@@ -48,14 +48,13 @@ const deleteCustomer = (id) => {
 }
 
 const insertCustomer = (customer) => {
+  // This probably only works for strings given the added citation: '${e}'
   const query = `INSERT INTO sales.customers (${Object.keys(customer)}) VALUES (${Object.values(customer).map(e => `'${e}'`)})`
-  console.log(query)
   return execute(query, createVoidRequest)
 }
 
 const updateCustomer = (id, customer) => {
   const query = `UPDATE sales.customers SET ${Object.keys(customer).map(key => `${key}='${customer[key]}'`)} WHERE customer_id = ${id}`
-  console.log(query)
   return execute(query, createVoidRequest)
 }
 
