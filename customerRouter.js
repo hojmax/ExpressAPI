@@ -3,12 +3,12 @@ const {
     deleteCustomer,
     insertCustomer,
     updateCustomer
-} = require('../db/db.js')
+} = require('./db/db.js')
 const {
     validateId,
     validatePost,
     validatePut
-} = require('../Joi.js')
+} = require('./JoiValidation.js')
 const express = require('express')
 const router = express.Router()
 
@@ -22,7 +22,7 @@ router.get('/:id', (req, res) => {
             if (data.length == 0) res.status(404).send()
             else res.send(data)
         })
-        .catch(err => res.status(400).send(err.toString()))
+        .catch(err => res.status(err.code || 400).send(err.toString()))
 })
 
 router.delete('/:id', (req, res) => {
@@ -30,7 +30,7 @@ router.delete('/:id', (req, res) => {
     if (error) return res.status(400).send(formatErr(error))
     deleteCustomer(req.params.id)
         .then(() => res.send('Success'))
-        .catch(err => res.status(400).send(err.toString()))
+        .catch(err => res.status(err.code || 400).send(err.toString()))
 })
 
 router.post('/', (req, res) => {
@@ -38,7 +38,7 @@ router.post('/', (req, res) => {
     if (error) return res.status(400).send(formatErr(error))
     insertCustomer(req.body)
         .then(() => res.send('Success'))
-        .catch(err => res.status(400).send(err.toString()))
+        .catch(err => res.status(err.code || 400).send(err.toString()))
 })
 
 router.put('/:id', (req, res) => {
@@ -48,7 +48,7 @@ router.put('/:id', (req, res) => {
     if (putValidation.error) return res.status(400).send(formatErr(putValidation.error))
     updateCustomer(req.params.id, req.body)
         .then(() => res.send('Success'))
-        .catch(err => res.status(400).send(err.toString()))
+        .catch(err => res.status(err.code || 400).send(err.toString()))
 })
 
 module.exports = router

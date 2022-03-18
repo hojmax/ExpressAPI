@@ -31,8 +31,13 @@ const createGetRequest = (query, resolve, reject) => {
 
 const createVoidRequest = (query, resolve, reject) => {
   const request = new Request(query, err => err && reject(err))
-  request.on('doneInProc', () => {
-    resolve()
+  request.on('doneInProc', (rowCount, more, rows) => {
+    if (rowCount === 0) {
+      const error = new Error('No rows affected.')
+      error.code = 404
+      reject(error)
+    }
+    else resolve()
   })
   return request
 }
