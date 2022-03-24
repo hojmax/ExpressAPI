@@ -27,7 +27,6 @@ const postSchema = Joi.object({
         .max(5),
 })
 
-
 const putSchema = Joi.object({
     first_name: Joi.string()
         .max(255),

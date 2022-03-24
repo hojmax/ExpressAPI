@@ -1,71 +1,44 @@
 const Connection = require('tedious').Connection
 const Request = require('tedious').Request
 const config = require('./config.json')
+const _ = require('lodash')
 
-const execute = (query, requestFunction) => new Promise((resolve, reject) => {
+function createRequest(query, connection, reject) {
+  return new Request(query, err => {
+    connection.close()
+    if (err) reject(err)
+  })
+}
+
+const execute = (query, type) => new Promise((resolve, reject) => {
   const connection = new Connection(config)
 
   connection.on('connect', err => {
     if (err) return reject(err)
-    connection.execSql(requestFunction(query, resolve, reject))
+    let requestTypes = {
+      'get': getRequest,
+      'void': voidRequest,
+    }
+    connection.execSql(requestTypes[type](query, connection, resolve, reject))
   })
 
   connection.connect()
 })
 
-const createGetRequest = (query, resolve, reject) => {
-  const request = new Request(query, err => err && reject(err))
-  let response = []
-  request.on('row', columns => {
-    let row = {}
-    columns.forEach(column => {
-      row[column.metadata.colName] = column.value
-    })
-    response.push(row)
-  })
-  request.on('doneInProc', () => {
-    resolve(response)
-  })
+const getRequest = (query, connection, resolve, reject) => {
+  const request = createRequest(query, connection, reject)
+  const result = []
+  request.on('row', row => result.push(
+    _.fromPairs(row.map(e => [e.metadata.colName, e.value]))
+  ))
+  request.on('doneInProc', () => resolve(result))
   return request
 }
 
-const createVoidRequest = (query, resolve, reject) => {
-  const request = new Request(query, err => err && reject(err))
-  request.on('doneInProc', (rowCount, more, rows) => {
-    if (rowCount === 0) {
-      const error = new Error('No rows affected.')
-      error.code = 404
-      reject(error)
-    }
-    else resolve()
-  })
+const voidRequest = (query, connection, resolve, reject) => {
+  const request = createRequest(query, connection, reject)
+  request.on('doneInProc', () => resolve())
   return request
 }
 
-const getCustomer = (id) => {
-  const query = `SELECT * FROM sales.customers WHERE customer_id = ${id}`
-  return execute(query, createGetRequest)
-}
-
-const deleteCustomer = (id) => {
-  const query = `DELETE FROM sales.customers WHERE customer_id = ${id}`
-  return execute(query, createVoidRequest)
-}
-
-const insertCustomer = (customer) => {
-  // This probably only works for strings given the added citation: '${e}'
-  const query = `INSERT INTO sales.customers (${Object.keys(customer)}) VALUES (${Object.values(customer).map(e => `'${e}'`)})`
-  return execute(query, createVoidRequest)
-}
-
-const updateCustomer = (id, customer) => {
-  const query = `UPDATE sales.customers SET ${Object.keys(customer).map(key => `${key}='${customer[key]}'`)} WHERE customer_id = ${id}`
-  return execute(query, createVoidRequest)
-}
-
-module.exports = {
-  getCustomer,
-  deleteCustomer,
-  insertCustomer,
-  updateCustomer
-}
+module.exports = execute
