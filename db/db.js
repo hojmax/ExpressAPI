@@ -3,13 +3,6 @@ const Request = require('tedious').Request
 const config = require('./config.json')
 const _ = require('lodash')
 
-function createRequest(query, connection, reject) {
-  return new Request(query, err => {
-    connection.close()
-    if (err) reject(err)
-  })
-}
-
 const execute = (query, type) => new Promise((resolve, reject) => {
   const connection = new Connection(config)
 
@@ -26,18 +19,24 @@ const execute = (query, type) => new Promise((resolve, reject) => {
 })
 
 const getRequest = (query, connection, resolve, reject) => {
-  const request = createRequest(query, connection, reject)
   const result = []
+  const request = new Request(query, err => {
+    if (err) reject(err)
+    else resolve(result)
+    connection.close()
+  })
   request.on('row', row => result.push(
     _.fromPairs(row.map(e => [e.metadata.colName, e.value]))
   ))
-  request.on('doneInProc', () => resolve(result))
   return request
 }
 
 const voidRequest = (query, connection, resolve, reject) => {
-  const request = createRequest(query, connection, reject)
-  request.on('doneInProc', () => resolve())
+  const request = new Request(query, err => {
+    if (err) reject(err)
+    else resolve()
+    connection.close()
+  })
   return request
 }
 

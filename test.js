@@ -20,7 +20,7 @@ describe('Endpoint Tests', () => {
     describe('Check .get(/:id)', () => {
         it('Status 200', done => {
             chai.request(app)
-                .get(`/customer/${testCustomer['customer_id']}`)
+                .get(`/customer/${testCustomer.customer_id}`)
                 .end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(200)
@@ -32,7 +32,6 @@ describe('Endpoint Tests', () => {
             chai.request(app)
                 .get(`/customer/99999`)
                 .end((err, res) => {
-                    console.log(err)
                     expect(res).to.have.status(404)
                     done()
                 })

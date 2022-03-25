@@ -2,6 +2,7 @@ const Joi = require('joi')
 
 const idSchema = Joi.object({
     id: Joi.number()
+        .integer()
         .required(),
 })
 
@@ -13,6 +14,7 @@ const postSchema = Joi.object({
         .max(255)
         .required(),
     email: Joi.string()
+        .email()
         .max(255)
         .required(),
     phone: Joi.string()
