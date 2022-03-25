@@ -37,7 +37,7 @@ router.post('/', (req, res) => {
     const { error } = validatePost(req.body)
     if (error) return res.status(400).send(extractErr(error))
     insertCustomer(req.body)
-        .then(() => res.send())
+        .then(data => res.send(data[0]))
         .catch(err => res.status(400).send(err.toString()))
 })
 

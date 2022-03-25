@@ -11,12 +11,12 @@ const deleteCustomer = id => {
 }
 
 const insertCustomer = customer => {
-    const query = `INSERT INTO sales.customers (${Object.keys(customer)}) VALUES (${Object.values(customer).map(e => `'${e}'`)})`
-    return execute(query, 'void')
+    const query = `INSERT INTO sales.customers (${Object.keys(customer)}) OUTPUT inserted.customer_id VALUES (${Object.values(customer).map(e => `'${e}'`)})`
+    return execute(query, 'get')
 }
 
 const updateCustomer = (id, customer) => {
-    const query = `UPDATE sales.customers SET ${Object.keys(customer).map(key => `${key}='${customer[key]}'`)} WHERE customer_id = ${id}`
+    const query = `UPDATE sales.customers SET ${Object.entries(customer).map(([key, value]) => `${key}='${value}'`)} WHERE customer_id = ${id}`
     return execute(query, 'void')
 }
 
