@@ -3,12 +3,12 @@ const {
     deleteCustomer,
     insertCustomer,
     updateCustomer
-} = require('./customerQueries.js')
+} = require('./queries.js')
 const {
     validateId,
     validatePost,
     validatePut
-} = require('./customerValidation.js')
+} = require('./validation.js')
 const express = require('express')
 const router = express.Router()
 

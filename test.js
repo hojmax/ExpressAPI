@@ -47,7 +47,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Handle invalid object', done => {
+        it('Handle invalid column', done => {
             chai.request(app)
                 .put(`/customer/${testCustomer.customer_id}`)
                 .send({ invalid_property: true })
@@ -103,7 +103,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Handle invalid object', done => {
+        it('Handle invalid column', done => {
             chai.request(app)
                 .post('/customer')
                 .send({
