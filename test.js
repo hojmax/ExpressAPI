@@ -56,6 +56,15 @@ describe('/customer', () => {
                     done()
                 })
         })
+        it('Handle non-existent customer', done => {
+            chai.request(app)
+                .put(`/customer/999999`)
+                .send({ city: 'test_city' })
+                .end((err, res) => {
+                    expect(res).to.have.status(404)
+                    done()
+                })
+        })
     })
     describe('.post(/)', () => {
         it('Missing first_name', done => {
@@ -94,16 +103,6 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Valid customer', done => {
-            chai.request(app)
-                .post('/customer')
-                .send(_.omit(testCustomer, 'customer_id'))
-                .end((err, res) => {
-                    newCustomerId = res.body.customer_id
-                    expect(res).to.have.status(200)
-                    done()
-                })
-        })
         it('Handle invalid object', done => {
             chai.request(app)
                 .post('/customer')
@@ -118,6 +117,18 @@ describe('/customer', () => {
                     done()
                 })
         })
+        it('Create new customer', done => {
+            chai.request(app)
+                .post('/customer')
+                .send(_.omit(testCustomer, 'customer_id'))
+                .end((err, res) => {
+                    expect(res.body).to.have.own.property('customer_id')
+                    expect(res.body.customer_id).to.be.a('number')
+                    expect(res).to.have.status(200)
+                    newCustomerId = res.body.customer_id
+                    done()
+                })
+        })
     })
     describe('.delete(/:id)', () => {
         it('Delete newly created customer', done => {
@@ -125,6 +136,14 @@ describe('/customer', () => {
                 .delete(`/customer/${newCustomerId}`)
                 .end((err, res) => {
                     expect(res).to.have.status(200)
+                    done()
+                })
+        })
+        it('Error when deleting non-existent customer', done => {
+            chai.request(app)
+                .delete(`/customer/${newCustomerId}`)
+                .end((err, res) => {
+                    expect(res).to.have.status(404)
                     done()
                 })
         })

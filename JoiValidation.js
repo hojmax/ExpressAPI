@@ -6,46 +6,44 @@ const idSchema = Joi.object({
         .required(),
 })
 
+const first_name = Joi.string()
+    .max(255)
+const last_name = Joi.string()
+    .max(255)
+const email = Joi.string()
+    .email()
+    .max(255)
+const phone = Joi.string()
+    .max(25)
+const city = Joi.string()
+    .max(50)
+const state = Joi.string()
+    .max(25)
+const street = Joi.string()
+    .max(255)
+const zip_code = Joi.string()
+    .max(5)
+
 const postSchema = Joi.object({
-    first_name: Joi.string()
-        .max(255)
-        .required(),
-    last_name: Joi.string()
-        .max(255)
-        .required(),
-    email: Joi.string()
-        .email()
-        .max(255)
-        .required(),
-    phone: Joi.string()
-        .max(25),
-    city: Joi.string()
-        .max(50),
-    street: Joi.string()
-        .max(255),
-    state: Joi.string()
-        .max(25),
-    zip_code: Joi.string()
-        .max(5),
+    first_name: first_name.required(),
+    last_name: last_name.required(),
+    email: email.required(),
+    phone,
+    city,
+    street,
+    state,
+    zip_code,
 })
 
 const putSchema = Joi.object({
-    first_name: Joi.string()
-        .max(255),
-    last_name: Joi.string()
-        .max(255),
-    email: Joi.string()
-        .max(255),
-    phone: Joi.string()
-        .max(25),
-    city: Joi.string()
-        .max(50),
-    street: Joi.string()
-        .max(255),
-    state: Joi.string()
-        .max(25),
-    zip_code: Joi.string()
-        .max(5),
+    first_name,
+    last_name,
+    email,
+    phone,
+    city,
+    street,
+    state,
+    zip_code,
 })
 
 module.exports = {

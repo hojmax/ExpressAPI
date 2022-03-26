@@ -32,9 +32,9 @@ const getRequest = (query, connection, resolve, reject) => {
 }
 
 const voidRequest = (query, connection, resolve, reject) => {
-  const request = new Request(query, err => {
+  const request = new Request(query, (err, rowCount) => {
     if (err) reject(err)
-    else resolve()
+    else resolve({ rowCount })
     connection.close()
   })
   return request
