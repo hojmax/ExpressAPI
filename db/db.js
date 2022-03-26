@@ -19,8 +19,8 @@ const execute = (query, parameters, type) => new Promise((resolve, reject) => {
 })
 
 const addParameters = (request, parameters) => {
-  Object.entries(parameters).forEach(([key, value]) => {
-    request.addParameter(key, value.type, value.value)
+  Object.entries(parameters).forEach(([key, parameter]) => {
+    request.addParameter(key, parameter.type, parameter.value)
   })
 }
 

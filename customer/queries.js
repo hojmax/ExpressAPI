@@ -1,18 +1,7 @@
-const TYPES = require('tedious').TYPES
+const { customerTypes } = require('./validation.js')
 const execute = require('../db/db.js')
 const _ = require('lodash')
 
-const customerTypes = {
-    customer_id: TYPES.Int,
-    first_name: TYPES.VarChar,
-    last_name: TYPES.VarChar,
-    email: TYPES.VarChar,
-    phone: TYPES.VarChar,
-    city: TYPES.VarChar,
-    street: TYPES.VarChar,
-    state: TYPES.VarChar,
-    zip_code: TYPES.VarChar,
-}
 
 const getIdParameters = id => ({
     customer_id: {

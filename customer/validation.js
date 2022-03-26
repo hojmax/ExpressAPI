@@ -1,10 +1,17 @@
+const TYPES = require('tedious').TYPES
 const Joi = require('joi')
 
-const idSchema = Joi.object({
-    id: Joi.number()
-        .integer()
-        .required(),
-})
+const customerTypes = {
+    customer_id: TYPES.Int,
+    first_name: TYPES.VarChar,
+    last_name: TYPES.VarChar,
+    email: TYPES.VarChar,
+    phone: TYPES.VarChar,
+    city: TYPES.VarChar,
+    street: TYPES.VarChar,
+    state: TYPES.VarChar,
+    zip_code: TYPES.VarChar,
+}
 
 const first_name = Joi.string()
     .max(255)
@@ -17,12 +24,18 @@ const phone = Joi.string()
     .max(25)
 const city = Joi.string()
     .max(50)
-const state = Joi.string()
-    .max(25)
 const street = Joi.string()
     .max(255)
+const state = Joi.string()
+    .max(25)
 const zip_code = Joi.string()
     .max(5)
+
+const idSchema = Joi.object({
+    id: Joi.number()
+        .integer()
+        .required(),
+})
 
 const postSchema = Joi.object({
     first_name: first_name.required(),
@@ -49,5 +62,6 @@ const putSchema = Joi.object({
 module.exports = {
     validateId: data => idSchema.validate(data),
     validatePost: data => postSchema.validate(data),
-    validatePut: data => putSchema.validate(data)
+    validatePut: data => putSchema.validate(data),
+    customerTypes
 }
