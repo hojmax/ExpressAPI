@@ -1,4 +1,4 @@
-const execute = require('./db.js')
+const execute = require('../db/db.js')
 
 const getCustomer = id => {
     const query = (

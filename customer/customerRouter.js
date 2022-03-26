@@ -3,12 +3,12 @@ const {
     deleteCustomer,
     insertCustomer,
     updateCustomer
-} = require('../db/customerQueries.js')
+} = require('./customerQueries.js')
 const {
     validateId,
     validatePost,
     validatePut
-} = require('../joiValidation.js')
+} = require('./customerValidation.js')
 const express = require('express')
 const router = express.Router()
 
@@ -16,17 +16,19 @@ const notFoundErr = (res) => res.status(404).send('Customer not found.')
 const joiErr = (res, err) => res.status(400).send(err.details[0].message)
 const dbErr = (res, err) => res.status(400).send(err.toString())
 
-router.get('/:id', (req, res) => {
+router.use('/:id', (req, res, next) => {
     const { error } = validateId(req.params)
     if (error) return joiErr(res, error)
+    next()
+})
+
+router.get('/:id', (req, res) => {
     getCustomer(req.params.id)
         .then(data => data.length == 0 ? notFoundErr(res) : res.send(data[0]))
         .catch(err => dbErr(res, err))
 })
 
 router.delete('/:id', (req, res) => {
-    const { error } = validateId(req.params)
-    if (error) return joiErr(res, error)
     deleteCustomer(req.params.id)
         .then(data => data.rowCount == 0 ? notFoundErr(res) : res.send())
         .catch(err => dbErr(res, err))
@@ -41,9 +43,8 @@ router.post('/', (req, res) => {
 })
 
 router.put('/:id', (req, res) => {
-    const { error: idError } = validateId(req.params)
-    const { error: putError } = validatePut(req.body)
-    if (idError || putError) return joiErr(res, idError || putError)
+    const { error } = validatePut(req.body)
+    if (error) return joiErr(res, error)
     updateCustomer(req.params.id, req.body)
         .then(data => data.rowCount == 0 ? notFoundErr(res) : res.send())
         .catch(err => dbErr(res, err))
