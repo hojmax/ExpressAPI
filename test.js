@@ -58,7 +58,7 @@ describe('/customer', () => {
         })
         it('Handle non-existent customer', done => {
             chai.request(app)
-                .put(`/customer/999999`)
+                .put(`/customer/99999999`)
                 .send({ city: 'test_city' })
                 .end((err, res) => {
                     expect(res).to.have.status(404)

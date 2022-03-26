@@ -11,7 +11,7 @@ const getCustomer = id => {
 const deleteCustomer = id => {
     const query = (
         `DELETE FROM sales.customers
-        WHERE customer_id = ${id}`
+         WHERE customer_id = ${id}`
     )
     return execute(query, 'void')
 }
