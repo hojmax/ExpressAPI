@@ -32,7 +32,7 @@ describe('/customer', () => {
         it('Alter city to previous value', done => {
             chai.request(app)
                 .put(`/customer/${testCustomer.customer_id}`)
-                .send({ city: testCustomer.city })
+                .send(_.pick(testCustomer, 'city'))
                 .end((err, res) => {
                     expect(res).to.have.status(200)
                     done()
@@ -41,7 +41,7 @@ describe('/customer', () => {
         it('Handle non-integer id', done => {
             chai.request(app)
                 .put(`/customer/a`)
-                .send({ city: testCustomer.city })
+                .send({ city: 'test_city' })
                 .end((err, res) => {
                     expect(res).to.have.status(400)
                     done()
@@ -97,7 +97,11 @@ describe('/customer', () => {
         it('Badly formatted email', done => {
             chai.request(app)
                 .post('/customer')
-                .send({ ...testCustomer, email: 'badly_formatted' })
+                .send({
+                    first_name: 'test_first_name',
+                    last_name: 'test_last_name',
+                    email: 'badly_formatted'
+                })
                 .end((err, res) => {
                     expect(res).to.have.status(400)
                     done()
