@@ -1,4 +1,4 @@
-const TYPES = require('tedious').TYPES
+const { TYPES } = require('tedious')
 const Joi = require('joi')
 
 const customerTypes = {

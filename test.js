@@ -26,6 +26,7 @@ describe('/customer', () => {
                 .send({ city: 'test_city' })
                 .end((err, res) => {
                     expect(res).to.have.status(200)
+                    expect(res.text).to.equal('Success')
                     done()
                 })
         })
@@ -35,6 +36,7 @@ describe('/customer', () => {
                 .send(_.pick(testCustomer, 'city'))
                 .end((err, res) => {
                     expect(res).to.have.status(200)
+                    expect(res.text).to.equal('Success')
                     done()
                 })
         })
@@ -70,7 +72,7 @@ describe('/customer', () => {
         it('Missing first_name', done => {
             chai.request(app)
                 .post('/customer')
-                .send(_.omit(testCustomer, 'first_name'))
+                .send(_.omit(testCustomer, ['first_name', 'customer_id']))
                 .end((err, res) => {
                     expect(res).to.have.status(400)
                     done()
@@ -79,7 +81,7 @@ describe('/customer', () => {
         it('Missing last_name', done => {
             chai.request(app)
                 .post('/customer')
-                .send(_.omit(testCustomer, 'last_name'))
+                .send(_.omit(testCustomer, ['last_name', 'customer_id']))
                 .end((err, res) => {
                     expect(res).to.have.status(400)
                     done()
@@ -88,7 +90,7 @@ describe('/customer', () => {
         it('Missing email', done => {
             chai.request(app)
                 .post('/customer')
-                .send(_.omit(testCustomer, 'email'))
+                .send(_.omit(testCustomer, ['email', 'customer_id']))
                 .end((err, res) => {
                     expect(res).to.have.status(400)
                     done()
@@ -140,6 +142,7 @@ describe('/customer', () => {
                 .delete(`/customer/${newCustomerId}`)
                 .end((err, res) => {
                     expect(res).to.have.status(200)
+                    expect(res.text).to.equal('Success')
                     done()
                 })
         })

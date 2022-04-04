@@ -1,5 +1,4 @@
-const Connection = require('tedious').Connection
-const Request = require('tedious').Request
+const { Connection, Request } = require('tedious')
 const config = require('./config.json')
 const _ = require('lodash')
 
