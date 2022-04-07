@@ -12,7 +12,7 @@ const {
 const express = require('express')
 const router = express.Router()
 
-const notFoundErr = res => res.status(404).send('Customer not found.')
+const notFoundErr = res => res.status(404).send('Customer not found')
 const joiErr = (res, err) => res.status(400).send(err.details[0].message)
 const dbErr = (res, err) => res.status(400).send(err.toString())
 

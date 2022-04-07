@@ -46,6 +46,7 @@ describe('/customer', () => {
                 .send({ city: 'test_city' })
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"id" must be a number')
                     done()
                 })
         })
@@ -55,6 +56,7 @@ describe('/customer', () => {
                 .send({ invalid_property: true })
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"invalid_property" is not allowed')
                     done()
                 })
         })
@@ -64,6 +66,7 @@ describe('/customer', () => {
                 .send({ city: 'test_city' })
                 .end((err, res) => {
                     expect(res).to.have.status(404)
+                    expect(res.text).to.equal('Customer not found')
                     done()
                 })
         })
@@ -75,6 +78,7 @@ describe('/customer', () => {
                 .send(_.omit(testCustomer, ['first_name', 'customer_id']))
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"first_name" is required')
                     done()
                 })
         })
@@ -84,6 +88,7 @@ describe('/customer', () => {
                 .send(_.omit(testCustomer, ['last_name', 'customer_id']))
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"last_name" is required')
                     done()
                 })
         })
@@ -93,6 +98,7 @@ describe('/customer', () => {
                 .send(_.omit(testCustomer, ['email', 'customer_id']))
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"email" is required')
                     done()
                 })
         })
@@ -106,6 +112,7 @@ describe('/customer', () => {
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"email" must be a valid email')
                     done()
                 })
         })
@@ -120,6 +127,7 @@ describe('/customer', () => {
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"invalid_property" is not allowed')
                     done()
                 })
         })
@@ -151,6 +159,7 @@ describe('/customer', () => {
                 .delete(`/customer/${newCustomerId}`)
                 .end((err, res) => {
                     expect(res).to.have.status(404)
+                    expect(res.text).to.equal('Customer not found')
                     done()
                 })
         })
@@ -159,6 +168,7 @@ describe('/customer', () => {
                 .delete(`/customer/a`)
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"id" must be a number')
                     done()
                 })
         })
@@ -178,6 +188,7 @@ describe('/customer', () => {
                 .get(`/customer/${newCustomerId}`)
                 .end((err, res) => {
                     expect(res).to.have.status(404)
+                    expect(res.text).to.equal('Customer not found')
                     done()
                 })
         })
@@ -186,6 +197,7 @@ describe('/customer', () => {
                 .get(`/customer/a`)
                 .end((err, res) => {
                     expect(res).to.have.status(400)
+                    expect(res.text).to.equal('"id" must be a number')
                     done()
                 })
         })
