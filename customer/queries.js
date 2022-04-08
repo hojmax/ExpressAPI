@@ -44,9 +44,9 @@ const deleteCustomer = id => {
 
 const insertCustomer = customer => {
     const query = (
-        `INSERT INTO sales.customers (${Object.keys(customer)})
+        `INSERT INTO sales.customers (${_.keys(customer)})
          OUTPUT inserted.customer_id
-         VALUES (${Object.keys(customer).map(e => `@${e}`)})`
+         VALUES (${_.keys(customer).map(e => `@${e}`)})`
     )
     const parameters = getCustomerParamters(customer)
     return execute(
@@ -59,7 +59,7 @@ const insertCustomer = customer => {
 const updateCustomer = (id, customer) => {
     const query = (
         `UPDATE sales.customers
-         SET ${Object.keys(customer).map(key => `${key} = @${key}`)}
+         SET ${_.keys(customer).map(key => `${key} = @${key}`)}
          WHERE customer_id = @customer_id`
     )
     const parameters = {
