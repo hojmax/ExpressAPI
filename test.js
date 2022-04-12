@@ -10,14 +10,14 @@ describe('/customer', () => {
     let newCustomerId = undefined
     const testCustomer = {
         customer_id: 212,
-        first_name: "Buford",
-        last_name: "Bridges",
-        phone: "(248) 604-7346",
-        email: "buford.bridges@msn.com",
-        street: "239 Oak Valley Court ",
-        city: "Troy",
-        state: "NY",
-        zip_code: "12180"
+        first_name: 'Buford',
+        last_name: 'Bridges',
+        phone: '(248) 604-7346',
+        email: 'buford.bridges@msn.com',
+        street: '239 Oak Valley Court ',
+        city: 'Troy',
+        state: 'NY',
+        zip_code: '12180'
     }
     describe('.put(/:id)', () => {
         it('Alter city', done => {

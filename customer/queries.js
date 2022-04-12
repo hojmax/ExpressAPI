@@ -10,7 +10,7 @@ const getIdParameters = id => ({
     }
 })
 
-const getCustomerParamters = customer => (
+const getCustomerParameters = customer => (
     _.mapValues(customer, (value, key) => (
         { value, type: customerTypes[key] }
     ))
@@ -48,7 +48,7 @@ const insertCustomer = customer => {
          OUTPUT inserted.customer_id
          VALUES (${_.keys(customer).map(e => `@${e}`)})`
     )
-    const parameters = getCustomerParamters(customer)
+    const parameters = getCustomerParameters(customer)
     return execute(
         query,
         parameters,
@@ -64,7 +64,7 @@ const updateCustomer = (id, customer) => {
     )
     const parameters = {
         ...getIdParameters(id),
-        ...getCustomerParamters(customer)
+        ...getCustomerParameters(customer)
     }
     return execute(
         query,
