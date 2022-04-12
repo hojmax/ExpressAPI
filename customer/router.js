@@ -14,7 +14,7 @@ const router = express.Router()
 
 const notFoundErr = res => res.status(404).send('Customer not found')
 const joiErr = (res, err) => res.status(400).send(err.details[0].message)
-const dbErr = (res, err) => res.status(400).send(err.toString())
+const dbErr = (res, err) => res.status(500).send(err.toString())
 
 router.use('/:id', (req, res, next) => {
     const { error } = validateId(req.params)
