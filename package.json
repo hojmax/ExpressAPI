@@ -10,11 +10,12 @@
     "joi": "^17.4.2",
     "lodash": "^4.17.21",
     "mocha": "^9.2.2",
+    "morgan": "^1.10.0",
     "tedious": "^14.3.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "mocha",
+    "test": "NODE_ENV=test mocha",
     "start": "node server.js"
   },
   "author": "",

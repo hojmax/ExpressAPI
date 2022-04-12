@@ -34,6 +34,7 @@ const zip_code = Joi.string()
 const idSchema = Joi.object({
     id: Joi.number()
         .integer()
+        .min(0)
         .required(),
 })
 

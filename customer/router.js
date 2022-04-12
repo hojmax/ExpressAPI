@@ -16,11 +16,13 @@ const notFoundErr = res => res.status(404).send('Customer not found')
 const joiErr = (res, err) => res.status(400).send(err.details[0].message)
 const dbErr = (res, err) => res.status(500).send(err.toString())
 
-router.use('/:id', (req, res, next) => {
-    const { error } = validateId(req.params)
+const joiMiddleware = (schema, property) => (req, res, next) => {
+    const { error } = schema(req[property])
     if (error) return joiErr(res, error)
     next()
-})
+}
+
+router.use('/:id', joiMiddleware(validateId, 'params'))
 
 router.get('/:id', (req, res) => {
     getCustomer(req.params.id)
@@ -34,17 +36,13 @@ router.delete('/:id', (req, res) => {
         .catch(err => dbErr(res, err))
 })
 
-router.post('/', (req, res) => {
-    const { error } = validatePost(req.body)
-    if (error) return joiErr(res, error)
+router.post('/', joiMiddleware(validatePost, 'body'), (req, res) => {
     insertCustomer(req.body)
         .then(data => res.send(data[0]))
         .catch(err => dbErr(res, err))
 })
 
-router.put('/:id', (req, res) => {
-    const { error } = validatePut(req.body)
-    if (error) return joiErr(res, error)
+router.put('/:id', joiMiddleware(validatePut, 'body'), (req, res) => {
     updateCustomer(req.params.id, req.body)
         .then(data => data.rowCount == 0 ? notFoundErr(res) : res.send('Success'))
         .catch(err => dbErr(res, err))
