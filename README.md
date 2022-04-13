@@ -1,6 +1,6 @@
-# ExpressAPI-AzureDB
-This repo is a simple Node.js API with full CRUD capabilities. Built with Express for the routing, Tedious for the DB-connection and Joi for data validation.
-The automatic testing is done using Mocha and Chai-HTTP. In order to use the project with a Azure SQL database, you should add a `./db/config.json` file with:
+# ExpressAPI
+This repo is a simple Node.js API with JWT and full CRUD capabilities. Built with Express for the routing, Tedious for the DB-connection and Joi for data validation.
+The automatic testing is done using Mocha and Chai-HTTP. In order to use the project with SQL Server, you should add a `./db/config.json` file with:
 ```json
 {  
     "server": "your.server.net", 
@@ -18,6 +18,15 @@ The automatic testing is done using Mocha and Chai-HTTP. In order to use the pro
     }
 } 
 ```
+And a `.env` file with a token secret:
+```
+TOKEN_SECRET=your_secret
+```
+You can generate a token secret with crypto:
+```js
+console.log(require('crypto').randomBytes(64).toString('hex'))
+```
+
 The CRUD operations are all centered around a customer table of the following form:
 ```sql
 create table sales.customers (
@@ -30,5 +39,12 @@ create table sales.customers (
     city        varchar(50),
     state       varchar(25),
     zip_code    varchar(5)
+)
+```
+And a user table for the validation:
+```sql
+create table user_info (
+    email     varchar(255) not null primary key,
+    hash_pass varchar(255) not null
 )
 ```
