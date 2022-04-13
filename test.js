@@ -54,7 +54,7 @@ describe('/login', () => {
             chai.request(app)
                 .post('/login')
                 .send({
-                    email: '@test.dk',
+                    email: 'badly_formatted',
                     password: 'string',
                 })
                 .end((err, res) => {
@@ -102,7 +102,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Handle non-integer id', done => {
+        it('Non-integer id', done => {
             chai.request(app)
                 .put(`/customer/a`)
                 .set('authorization', bearerToken)
@@ -113,7 +113,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Handle invalid column', done => {
+        it('Invalid column', done => {
             chai.request(app)
                 .put(`/customer/${testCustomer.customer_id}`)
                 .set('authorization', bearerToken)
@@ -124,7 +124,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Handle non-existent customer', done => {
+        it('Non-existent customer', done => {
             chai.request(app)
                 .put(`/customer/99999999`)
                 .set('authorization', bearerToken)
@@ -132,6 +132,17 @@ describe('/customer', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(404)
                     expect(res.text).to.equal('Customer not found')
+                    done()
+                })
+        })
+        it('Invalid JWT', done => {
+            chai.request(app)
+                .put(`/customer/${testCustomer.customer_id}`)
+                .set('authorization', 'fake_jwt')
+                .send({ city: 'test_city' })
+                .end((err, res) => {
+                    expect(res).to.have.status(401)
+                    expect(res.text).to.equal('Invalid token')
                     done()
                 })
         })
@@ -170,7 +181,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Badly formatted email', done => {
+        it('Invalid email', done => {
             chai.request(app)
                 .post('/customer')
                 .set('authorization', bearerToken)
@@ -185,7 +196,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Handle invalid column', done => {
+        it('Invalid column', done => {
             chai.request(app)
                 .post('/customer')
                 .set('authorization', bearerToken)
@@ -214,8 +225,29 @@ describe('/customer', () => {
                     done()
                 })
         })
+        it('Invalid JWT', done => {
+            chai.request(app)
+                .post('/customer')
+                .set('authorization', 'fake_jwt')
+                .send(_.omit(testCustomer, 'customer_id'))
+                .end((err, res) => {
+                    expect(res).to.have.status(401)
+                    expect(res.text).to.equal('Invalid token')
+                    done()
+                })
+        })
     })
     describe('.delete(/:id)', () => {
+        it('Invalid JWT', done => {
+            chai.request(app)
+                .delete(`/customer/${newCustomerId}`)
+                .set('authorization', 'fake_jwt')
+                .end((err, res) => {
+                    expect(res).to.have.status(401)
+                    expect(res.text).to.equal('Invalid token')
+                    done()
+                })
+        })
         it('Delete newly created customer', done => {
             chai.request(app)
                 .delete(`/customer/${newCustomerId}`)
@@ -226,7 +258,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Error when deleting non-existent customer', done => {
+        it('Deleting non-existent customer', done => {
             chai.request(app)
                 .delete(`/customer/${newCustomerId}`)
                 .set('authorization', bearerToken)
@@ -236,7 +268,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Handle non-integer id', done => {
+        it('Non-integer id', done => {
             chai.request(app)
                 .delete(`/customer/a`)
                 .set('authorization', bearerToken)
@@ -258,7 +290,17 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Check the deleted customer is non-existent', done => {
+        it('Invalid JWT', done => {
+            chai.request(app)
+                .get(`/customer/${testCustomer.customer_id}`)
+                .set('authorization', 'fake_jwt')
+                .end((err, res) => {
+                    expect(res).to.have.status(401)
+                    expect(res.text).to.equal('Invalid token')
+                    done()
+                })
+        })
+        it('Deleted customer is non-existent', done => {
             chai.request(app)
                 .get(`/customer/${newCustomerId}`)
                 .set('authorization', bearerToken)
@@ -268,7 +310,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Handle non-integer id', done => {
+        it('Non-integer id', done => {
             chai.request(app)
                 .get(`/customer/a`)
                 .set('authorization', bearerToken)
