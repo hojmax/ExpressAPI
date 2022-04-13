@@ -11,6 +11,6 @@ const loginSchema = Joi.object({
         .required()
 })
 
-const validateLogin = data => loginSchema.validate(data)
-
-module.exports = { validateLogin }
+module.exports = {
+    validateLogin: data => loginSchema.validate(data)
+}

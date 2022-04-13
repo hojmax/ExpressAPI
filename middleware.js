@@ -16,7 +16,7 @@ const jwtMiddleware = (req, res, next) => {
 
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
         if (err) return next({ message: 'Invalid token', status: 401 })
-        req.decoded = decoded
+        req.payload = decoded
         next()
     })
 }
