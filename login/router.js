@@ -1,20 +1,11 @@
 const { joiMiddleware } = require('../middleware.js')
 const { getHashPass } = require('./queries.js')
 const { validateLogin } = require('./validation.js')
+const { getAccessToken } = require('./jwt.js')
 const router = require('express').Router()
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-require('dotenv').config()
 
 const loginError = { message: 'Invalid email or password', status: 401 }
-
-const getAccessToken = (payload = {}) => (
-    jwt.sign(
-        payload,
-        process.env.TOKEN_SECRET,
-        { expiresIn: '1800s' }
-    )
-)
 
 router.post('/', joiMiddleware(validateLogin, 'body'), (req, res, next) => {
     const { email, password } = req.body

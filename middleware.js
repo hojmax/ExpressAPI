@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken')
+const { verify_jwt } = require('./login/jwt.js')
 
 const joiMiddleware = (schema, property) => (req, res, next) => {
     const { error } = schema(req[property])
@@ -14,7 +14,7 @@ const jwtMiddleware = (req, res, next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+    verify_jwt(token, (err, decoded) => {
         if (err) return next({ message: 'Invalid token', status: 401 })
         req.payload = decoded
         next()

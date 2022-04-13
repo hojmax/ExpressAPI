@@ -22,7 +22,7 @@ And a `.env` file with a token secret:
 ```
 TOKEN_SECRET=your_secret
 ```
-You can generate a token secret with crypto:
+You can generate a token secret like so:
 ```js
 console.log(require('crypto').randomBytes(64).toString('hex'))
 ```
@@ -48,4 +48,4 @@ create table user_info (
     hash_pass varchar(255) not null
 )
 ```
-You can start the API with `npm start` or run the testing suite with `npm test`. Morgan (logging of responses) is turned off during testing.
+The hash_pass entries are encrypted using bcrypt. You can start the API with `npm start` or run the testing suite with `npm test`. Morgan (logging of responses) is turned off during testing.
