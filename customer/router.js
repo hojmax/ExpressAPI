@@ -9,13 +9,15 @@ const {
     validatePost,
     validatePut
 } = require('./validation.js')
-const { joiMiddleware } = require('../middleware.js')
-const express = require('express')
-const router = express.Router()
-const _ = require('lodash')
+const {
+    joiMiddleware,
+    jwtMiddleware
+} = require('../middleware.js')
+const router = require('express').Router()
 
 const notFoundErr = { message: 'Customer not found', status: 404 }
 
+router.use('/', jwtMiddleware)
 router.use('/:id', joiMiddleware(validateId, 'params'))
 
 router.get('/:id', (req, res, next) => {

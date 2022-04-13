@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 const joiMiddleware = (schema, property) => (req, res, next) => {
     const { error } = schema(req[property])
     next(error && {
@@ -8,4 +10,15 @@ const joiMiddleware = (schema, property) => (req, res, next) => {
 
 const errorMiddleware = (err, req, res, next) => res.status(err.status || 500).send(err.message)
 
-module.exports = { joiMiddleware, errorMiddleware }
+const jwtMiddleware = (req, res, next) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+        if (err) return next({ message: 'Invalid token', status: 401 })
+        req.decoded = decoded
+        next()
+    })
+}
+
+module.exports = { joiMiddleware, errorMiddleware, jwtMiddleware }
