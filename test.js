@@ -8,6 +8,65 @@ chai.use(chaiHttp)
 
 let bearerToken = undefined
 
+const nonInteger = (type) => (
+    it('Non-integer id', done => {
+        chai.request(app)[type](`/customer/a`)
+            .set('authorization', bearerToken)
+            .end((err, res) => {
+                expect(res).to.have.status(400)
+                expect(res.text).to.equal('"id" must be a number')
+                done()
+            })
+    })
+)
+
+const invalidJWT = (type, route) => (
+    it('Invalid JWT', done => {
+        chai.request(app)[type](route)
+            .set('authorization', 'fake_jwt')
+            .end((err, res) => {
+                expect(res).to.have.status(401)
+                expect(res.text).to.equal('Invalid token')
+                done()
+            })
+    })
+)
+
+const invalidColumn = (type, route) => (
+    it('Invalid column', done => {
+        chai.request(app)[type](route)
+            .set('authorization', bearerToken)
+            .send({
+                invalid_property: true,
+                first_name: 'test_first_name',
+                last_name: 'test_last_name',
+                email: 'test@email.dk'
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(400)
+                expect(res.text).to.equal('"invalid_property" is not allowed')
+                done()
+            })
+    })
+)
+
+const invalidEmail = (type, route) => (
+    it('Invalid email', done => {
+        chai.request(app)[type](route)
+            .set('authorization', bearerToken)
+            .send({
+                first_name: 'test_first_name',
+                last_name: 'test_last_name',
+                email: 'badly_formatted'
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(400)
+                expect(res.text).to.equal('"email" must be a valid email')
+                done()
+            })
+    })
+)
+
 describe('/login', () => {
     describe('.post(/)', () => {
         it('Successful login', done => {
@@ -102,28 +161,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Non-integer id', done => {
-            chai.request(app)
-                .put(`/customer/a`)
-                .set('authorization', bearerToken)
-                .send({ city: 'test_city' })
-                .end((err, res) => {
-                    expect(res).to.have.status(400)
-                    expect(res.text).to.equal('"id" must be a number')
-                    done()
-                })
-        })
-        it('Invalid column', done => {
-            chai.request(app)
-                .put(`/customer/${testCustomer.customer_id}`)
-                .set('authorization', bearerToken)
-                .send({ invalid_property: true })
-                .end((err, res) => {
-                    expect(res).to.have.status(400)
-                    expect(res.text).to.equal('"invalid_property" is not allowed')
-                    done()
-                })
-        })
+        invalidColumn('put', `/customer/${testCustomer.customer_id}`)
         it('Non-existent customer', done => {
             chai.request(app)
                 .put(`/customer/99999999`)
@@ -135,17 +173,9 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Invalid JWT', done => {
-            chai.request(app)
-                .put(`/customer/${testCustomer.customer_id}`)
-                .set('authorization', 'fake_jwt')
-                .send({ city: 'test_city' })
-                .end((err, res) => {
-                    expect(res).to.have.status(401)
-                    expect(res.text).to.equal('Invalid token')
-                    done()
-                })
-        })
+        invalidEmail('put', `/customer/${testCustomer.customer_id}`)
+        invalidJWT('put', `/customer/${testCustomer.customer_id}`)
+        nonInteger('put')
     })
     describe('.post(/)', () => {
         it('Missing first_name', done => {
@@ -181,37 +211,8 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Invalid email', done => {
-            chai.request(app)
-                .post('/customer')
-                .set('authorization', bearerToken)
-                .send({
-                    first_name: 'test_first_name',
-                    last_name: 'test_last_name',
-                    email: 'badly_formatted'
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400)
-                    expect(res.text).to.equal('"email" must be a valid email')
-                    done()
-                })
-        })
-        it('Invalid column', done => {
-            chai.request(app)
-                .post('/customer')
-                .set('authorization', bearerToken)
-                .send({
-                    invalid_property: true,
-                    first_name: 'test_first_name',
-                    last_name: 'test_last_name',
-                    email: 'test@email.dk'
-                })
-                .end((err, res) => {
-                    expect(res).to.have.status(400)
-                    expect(res.text).to.equal('"invalid_property" is not allowed')
-                    done()
-                })
-        })
+        invalidEmail('post', '/customer')
+        invalidColumn('post', '/customer')
         it('Create new customer', done => {
             chai.request(app)
                 .post('/customer')
@@ -225,29 +226,9 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Invalid JWT', done => {
-            chai.request(app)
-                .post('/customer')
-                .set('authorization', 'fake_jwt')
-                .send(_.omit(testCustomer, 'customer_id'))
-                .end((err, res) => {
-                    expect(res).to.have.status(401)
-                    expect(res.text).to.equal('Invalid token')
-                    done()
-                })
-        })
+        invalidJWT('post', '/customer')
     })
     describe('.delete(/:id)', () => {
-        it('Invalid JWT', done => {
-            chai.request(app)
-                .delete(`/customer/${newCustomerId}`)
-                .set('authorization', 'fake_jwt')
-                .end((err, res) => {
-                    expect(res).to.have.status(401)
-                    expect(res.text).to.equal('Invalid token')
-                    done()
-                })
-        })
         it('Delete newly created customer', done => {
             chai.request(app)
                 .delete(`/customer/${newCustomerId}`)
@@ -268,16 +249,8 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Non-integer id', done => {
-            chai.request(app)
-                .delete(`/customer/a`)
-                .set('authorization', bearerToken)
-                .end((err, res) => {
-                    expect(res).to.have.status(400)
-                    expect(res.text).to.equal('"id" must be a number')
-                    done()
-                })
-        })
+        invalidJWT('delete', `/customer/${newCustomerId}`)
+        nonInteger('delete')
     })
     describe('.get(/:id)', () => {
         it('Get correct customer', done => {
@@ -287,16 +260,6 @@ describe('/customer', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200)
                     expect(res.body).to.deep.equal(testCustomer)
-                    done()
-                })
-        })
-        it('Invalid JWT', done => {
-            chai.request(app)
-                .get(`/customer/${testCustomer.customer_id}`)
-                .set('authorization', 'fake_jwt')
-                .end((err, res) => {
-                    expect(res).to.have.status(401)
-                    expect(res.text).to.equal('Invalid token')
                     done()
                 })
         })
@@ -310,15 +273,7 @@ describe('/customer', () => {
                     done()
                 })
         })
-        it('Non-integer id', done => {
-            chai.request(app)
-                .get(`/customer/a`)
-                .set('authorization', bearerToken)
-                .end((err, res) => {
-                    expect(res).to.have.status(400)
-                    expect(res.text).to.equal('"id" must be a number')
-                    done()
-                })
-        })
+        invalidJWT('get', `/customer/${testCustomer.customer_id}`)
+        nonInteger('get')
     })
 })
