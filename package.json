@@ -22,6 +22,6 @@
     "test": "NODE_ENV=test mocha",
     "start": "node server.js"
   },
-  "author": "",
+  "author": "Axel Højmark",
   "license": "ISC"
 }

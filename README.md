@@ -48,3 +48,4 @@ create table user_info (
     hash_pass varchar(255) not null
 )
 ```
+You can start the API with `npm start` or run the testing suite with `npm test`. Morgan (logging of responses) is turned off during testing.
