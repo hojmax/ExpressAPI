@@ -1,6 +1,6 @@
 const chai = require('chai')
 const chaiHttp = require('chai-http')
-const app = require('./server.js')
+const app = require('./main/server.js')
 const expect = chai.expect
 const _ = require('lodash')
 
@@ -27,6 +27,17 @@ const invalidJWT = (type, route) => (
             .end((err, res) => {
                 expect(res).to.have.status(401)
                 expect(res.text).to.equal('Invalid token')
+                done()
+            })
+    })
+)
+
+const missingJWT = (type, route) => (
+    it('Missing JWT', done => {
+        chai.request(app)[type](route)
+            .end((err, res) => {
+                expect(res).to.have.status(401)
+                expect(res.text).to.equal('Missing token')
                 done()
             })
     })
@@ -175,6 +186,7 @@ describe('/customer', () => {
         })
         invalidEmail('put', `/customer/${testCustomer.customer_id}`)
         invalidJWT('put', `/customer/${testCustomer.customer_id}`)
+        missingJWT('put', `/customer/${testCustomer.customer_id}`)
         nonInteger('put')
     })
     describe('.post(/)', () => {
@@ -227,6 +239,7 @@ describe('/customer', () => {
                 })
         })
         invalidJWT('post', '/customer')
+        missingJWT('post', '/customer')
     })
     describe('.delete(/:id)', () => {
         it('Delete newly created customer', done => {
@@ -250,6 +263,7 @@ describe('/customer', () => {
                 })
         })
         invalidJWT('delete', `/customer/${newCustomerId}`)
+        missingJWT('delete', `/customer/${newCustomerId}`)
         nonInteger('delete')
     })
     describe('.get(/:id)', () => {
@@ -274,6 +288,7 @@ describe('/customer', () => {
                 })
         })
         invalidJWT('get', `/customer/${testCustomer.customer_id}`)
+        missingJWT('get', `/customer/${testCustomer.customer_id}`)
         nonInteger('get')
     })
 })

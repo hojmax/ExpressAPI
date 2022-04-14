@@ -1,8 +1,8 @@
 const express = require('express')
 const logger = require('morgan')
-const customerRouter = require('./customer/router.js')
-const loginRouter = require('./login/router.js')
-const { errorMiddleware } = require('./middleware.js')
+const customerRouter = require('../customer/router.js')
+const loginRouter = require('../login/router.js')
+const { errorMiddleware } = require('../main/middleware.js')
 const app = express()
 const port = 3000
 

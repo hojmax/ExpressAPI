@@ -1,11 +1,11 @@
-const { joiMiddleware } = require('../middleware.js')
+const { joiMiddleware } = require('../main/middleware.js')
 const { getHashPass } = require('./queries.js')
 const { validateLogin } = require('./validation.js')
 const { getAccessToken } = require('./jwt.js')
+const { loginError } = require('../main/error.js')
 const router = require('express').Router()
 const bcrypt = require('bcrypt')
 
-const loginError = { message: 'Invalid email or password', status: 401 }
 
 router.post('/', joiMiddleware(validateLogin, 'body'), (req, res, next) => {
     const { email, password } = req.body
