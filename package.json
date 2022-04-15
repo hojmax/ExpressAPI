@@ -7,6 +7,7 @@
     "bcrypt": "^5.0.1",
     "chai": "^4.3.6",
     "chai-http": "^4.3.0",
+    "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
@@ -20,7 +21,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "NODE_ENV=test mocha",
-    "start": "node server.js"
+    "start": "node ./main/server.js"
   },
   "author": "Axel Højmark",
   "license": "ISC"

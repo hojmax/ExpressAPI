@@ -12,11 +12,14 @@ const jwtMiddleware = (req, res, next) => {
     const authHeader = req.headers['authorization']
     if (!authHeader) return next(missingTokenError)
     const token = authHeader && authHeader.split(' ')[1]
-    verify_jwt(token, (err, decoded) => {
-        if (err) return next(invalidTokenError)
-        req.payload = decoded
-        next()
-    })
+    verify_jwt(
+        token,
+        'access',
+        (err, decoded) => {
+            req.payload = decoded
+            next(err && invalidTokenError)
+        }
+    )
 }
 
 module.exports = { joiMiddleware, errorMiddleware, jwtMiddleware }

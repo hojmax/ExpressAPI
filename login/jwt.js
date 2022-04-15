@@ -1,19 +1,25 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const getAccessToken = (payload = {}) => (
-    jwt.sign(
-        payload,
-        process.env.TOKEN_SECRET,
-        { expiresIn: '1800s' }
-    )
+const secrets = {
+    'access': process.env.ACCESS_TOKEN_SECRET,
+    'refresh': process.env.REFRESH_TOKEN_SECRET
+}
+
+const tokenDuration = {
+    access: '10m',
+    refresh: '30d'
+}
+
+const getJWT = (type, payload = {}) => (
+    jwt.sign(payload, secrets[type], { expiresIn: tokenDuration[type] })
 )
 
-const verify_jwt = (token, callback) => (
-    jwt.verify(token, process.env.TOKEN_SECRET, callback)
+const verify_jwt = (token, type, callback) => (
+    jwt.verify(token, secrets[type], callback)
 )
 
 module.exports = {
-    getAccessToken,
+    getJWT,
     verify_jwt
 }

@@ -1,7 +1,7 @@
 module.exports = {
     loginError: {
         message: 'Invalid email or password',
-        status: 401
+        status: 403
     },
     notFoundError: {
         message: 'Customer not found',
@@ -13,10 +13,10 @@ module.exports = {
     }),
     invalidTokenError: {
         message: 'Invalid token',
-        status: 401
+        status: 403
     },
     missingTokenError: {
         message: 'Missing token',
         status: 401
-    }
+    },
 }

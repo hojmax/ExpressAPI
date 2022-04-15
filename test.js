@@ -25,7 +25,7 @@ const invalidJWT = (type, route) => (
         chai.request(app)[type](route)
             .set('authorization', 'fake_jwt')
             .end((err, res) => {
-                expect(res).to.have.status(401)
+                expect(res).to.have.status(403)
                 expect(res.text).to.equal('Invalid token')
                 done()
             })
@@ -78,51 +78,51 @@ const invalidEmail = (type, route) => (
     })
 )
 
-describe('/login', () => {
-    describe('.post(/)', () => {
+describe('/auth', () => {
+    describe('.post(/login)', () => {
         it('Successful login', done => {
             chai.request(app)
-                .post('/login')
+                .post('/auth/login')
                 .send({
                     email: 'test@test.dk',
                     password: 'string',
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(200)
-                    expect(res.text).to.be.a('string')
-                    bearerToken = `Bearer ${res.text}`
+                    expect(res.body).to.have.own.property('accessToken')
+                    bearerToken = `Bearer ${res.body.accessToken}`
                     done()
                 })
         })
         it('Wrong email', done => {
             chai.request(app)
-                .post('/login')
+                .post('/auth/login')
                 .send({
                     email: 'test@tost.dk',
                     password: 'string',
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401)
+                    expect(res).to.have.status(403)
                     expect(res.text).to.equal('Invalid email or password')
                     done()
                 })
         })
         it('Wrong password', done => {
             chai.request(app)
-                .post('/login')
+                .post('/auth/login')
                 .send({
                     email: 'test@test.dk',
                     password: 'strong',
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(401)
+                    expect(res).to.have.status(403)
                     expect(res.text).to.equal('Invalid email or password')
                     done()
                 })
         })
         it('Invalid email', done => {
             chai.request(app)
-                .post('/login')
+                .post('/auth/login')
                 .send({
                     email: 'badly_formatted',
                     password: 'string',
