@@ -78,10 +78,12 @@ const invalidEmail = (type, route) => (
     })
 )
 
+const agent = chai.request.agent(app)
+
 describe('/auth', () => {
     describe('.post(/login)', () => {
-        it('Successful login', done => {
-            chai.request(app)
+        it('Valid login', done => {
+            agent
                 .post('/auth/login')
                 .send({
                     email: 'test@test.dk',
@@ -89,6 +91,7 @@ describe('/auth', () => {
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(200)
+                    expect(res).to.have.cookie('refreshToken');
                     expect(res.body).to.have.own.property('accessToken')
                     bearerToken = `Bearer ${res.body.accessToken}`
                     done()
@@ -130,6 +133,37 @@ describe('/auth', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(400)
                     expect(res.text).to.equal('"email" must be a valid email')
+                    done()
+                })
+        })
+    })
+    describe('.post(/refresh)', () => {
+        it('Valid refresh', done => {
+            agent
+                .post('/auth/refresh')
+                .end((err, res) => {
+                    expect(res).to.have.status(200)
+                    expect(res.body).to.have.own.property('accessToken')
+                    done()
+                })
+        })
+        it('Missing refresh token', done => {
+            chai.request(app)
+                .post('/auth/refresh')
+                .end((err, res) => {
+                    expect(res).to.have.status(401)
+                    expect(res.text).to.equal('Missing token')
+                    done()
+                })
+        })
+    })
+    describe('.post(/logout)', () => {
+        it('Clear cookies', done => {
+            agent
+                .post('/auth/logout')
+                .end((err, res) => {
+                    expect(res).to.have.status(200)
+                    expect(agent).to.not.have.cookie('refreshToken')
                     done()
                 })
         })
