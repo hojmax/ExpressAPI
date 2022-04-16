@@ -163,6 +163,7 @@ describe('/auth', () => {
                 .post('/auth/logout')
                 .end((err, res) => {
                     expect(res).to.have.status(200)
+                    expect(res.text).to.equal('Success')
                     expect(agent).to.not.have.cookie('refreshToken')
                     done()
                 })

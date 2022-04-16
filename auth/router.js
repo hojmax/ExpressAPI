@@ -43,7 +43,7 @@ router.post('/refresh', (req, res, next) => {
 
 
 router.post('/logout', (req, res, next) => {
-    res.clearCookie("refreshToken").send()
+    res.clearCookie("refreshToken").send('Success')
 })
 
 module.exports = router

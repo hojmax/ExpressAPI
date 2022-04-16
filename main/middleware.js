@@ -1,12 +1,10 @@
 const { joiError, invalidTokenError, missingTokenError } = require('./error.js')
-const { verify_jwt } = require('../login/jwt.js')
+const { verify_jwt } = require('../auth/jwt.js')
 
 const joiMiddleware = (schema, property) => (req, res, next) => {
     const { error } = schema(req[property])
     next(error && joiError(error))
 }
-
-const errorMiddleware = (err, req, res, next) => res.status(err.status || 500).send(err.message)
 
 const jwtMiddleware = (req, res, next) => {
     const authHeader = req.headers['authorization']
@@ -22,4 +20,10 @@ const jwtMiddleware = (req, res, next) => {
     )
 }
 
-module.exports = { joiMiddleware, errorMiddleware, jwtMiddleware }
+const errorMiddleware = (err, req, res, next) => res.status(err.status || 500).send(err.message)
+
+module.exports = {
+    errorMiddleware,
+    joiMiddleware,
+    jwtMiddleware
+}

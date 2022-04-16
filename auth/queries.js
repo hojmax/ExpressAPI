@@ -18,4 +18,5 @@ const getHashPass = email => {
         'get'
     )
 }
+
 module.exports = { getHashPass }
