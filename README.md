@@ -41,7 +41,7 @@ The hash_pass entries are encrypted using **bcrypt**.
     post   /logout
 ```
 
-## ⚙️ Setup
+## 🛠 Setup
 In order to use the project with SQL Server, you should add a `./db/config.json` file with:
 ```json
 {  
