@@ -42,7 +42,7 @@ The hash_pass entries are encrypted using **bcrypt**.
 ```
 
 ## 🛠 Setup
-In order to use the project with SQL Server, you should add a `./db/config.json` file with:
+In order to use the project with SQL Server, you should add a `db/config.json` file with:
 ```json
 {  
     "server": "your.server.net", 
