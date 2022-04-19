@@ -1,5 +1,4 @@
 # ExpressAPI
-## Description
 This repo is a simple Node.js API with JWT and full CRUD capabilities. Built with **Express** for the routing, **Tedious** for the DB-connection and **Joi** for data validation. The automatic testing is done using **Mocha** and **Chai-HTTP**.
 
 ## Tables
